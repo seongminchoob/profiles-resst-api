@@ -5,6 +5,7 @@
 # configures the configuration version (we support older styles for
 # backwards compatibility). Please don't change it unless you know what
 # you're doing.
+
 Vagrant.configure("2") do |config|
  # The most common configuration options are documented and commented below.
  # For a complete reference, please see the online documentation at
@@ -16,6 +17,11 @@ Vagrant.configure("2") do |config|
  config.vm.box_version = "~> 20200304.0.0"
 
  config.vm.network "forwarded_port", guest: 8000, host: 8000
+ config.vm.provision :shell, :inline => "sudo rm /etc/localtime && sudo ln -s /usr/share/zoneinfo/Asia/Seoul /etc/localtime", run: "always"
+
+ if Vagrant.has_plugin?("vagrant-timezone")
+     config.timezone.value = "UTC"
+ end
 
  config.vm.provision "shell", inline: <<-SHELL
    systemctl disable apt-daily.service
